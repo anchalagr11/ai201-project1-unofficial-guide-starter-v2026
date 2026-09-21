@@ -113,30 +113,56 @@ The bad: known damp problem on the ground floor; two rooms were taken offline in
 
 ## Sample Answer
 
-<!-- One complete question and answer, pasted as text, with the source line
-     visible. Milestone 4. -->
-
-**Question:**
+**Question:** How much does laundry cost in Aldridge Hall?
 
 **Answer:**
 
 ```
+(best distance 0.247, cutoff 0.6)
+
+In Aldridge Hall, laundry costs $1.75 for a wash and $1.50 for a dry.
+
+Source: housing_aldridge_hall.txt (also mentioned in housing_aldridge_hall_laundry.txt).
+
+Sources retrieved: housing_aldridge_hall.txt, housing_aldridge_hall_laundry.txt, housing_calder_annexe.txt, housing_innisfree_hall.txt, housing_old_brewhouse.txt
 ```
 
-**My relevance cutoff:**
+The prompt for this answer included four *other* buildings' laundry costs as
+context (Innisfree, Old Brewhouse, Calder), and the model still gave Aldridge's
+number and cited an Aldridge file. I kept `GROUNDING_INSTRUCTION` in
+`generate.py` unchanged: I asked the same laundry question of three different
+buildings whose costs all differ, and each answer stayed on the right building's
+document, so answers weren't drifting past the sources.
 
-<!-- The number you set in config.py, and how you got there.
+**My relevance cutoff:** 0.6 (top_k = 5)
 
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
+I ran all five of my questions and the five OUT_OF_SCOPE ones through retrieval
+and recorded the best (rank-1) distance for each. The two groups don't overlap
+at all: everything my corpus covers lands between 0.25 and 0.37, and everything
+from a different world lands between 0.82 and 0.92. The gap between the two runs
+from 0.373 to 0.825, with nothing inside it.
 
-     Milestone 4. -->
+I kept 0.6 because it sits almost dead centre in that gap (the midpoint is
+0.599). That leaves 0.23 of room above my hardest real question and 0.23 below
+my closest off-topic one, so a real question that's a bit harder, or an
+off-topic question that shares a bit more vocabulary, would both still be
+sorted correctly. A cutoff near 0.3 would start refusing questions I have the
+answer to (my worst real question is already 0.373); one near 0.9 would let the
+diesel-engine and World-Cup questions through and the model would make something
+up.
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| How much does laundry cost in Aldridge Hall? | Yes | 0.247 |
+| When do you declare a major? | Yes | 0.286 |
+| What is the weekly workload for BIOL 160? | Yes | 0.312 |
+| What is the printing quota per semester? | Yes | 0.341 |
+| When does Halden Hall close? | Yes | 0.373 |
+| What is the capital of Mongolia? | No | 0.825 |
+| What is the recommended dosage of ibuprofen for a headache? | No | 0.844 |
+| Who won the 1994 World Cup? | No | 0.886 |
+| How do I write a for loop in Rust? | No | 0.891 |
+| How do I change the oil in a diesel engine? | No | 0.923 |
 
 ## How I Used AI
 
