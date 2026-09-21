@@ -23,8 +23,7 @@ For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
 **Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
+My questions ask for specific facts like prices, hours, and workloads. I expect exact factual retrieval to be highly successful, but allowing 1 failure accounts for edge cases where the embedding model might miss the semantic link.
 
 ---
 
@@ -33,8 +32,7 @@ contains the answer.
 Every answer the system produces names at least one source document.
 
 **Why this target:**
-<!-- Why all five and not four? What about your setup makes that achievable —
-     or what would have to go wrong for it not to be? -->
+This is a structural requirement of our prompt. The prompt explicitly instructs the model to cite sources based on the context provided, so it should be achievable 100% of the time unless the prompt format breaks.
 
 ---
 
@@ -50,49 +48,24 @@ in at least 4 of 5 tries.
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
 **Why this target:**
-<!-- What did your distances look like when you set the cutoff in Milestone 4?
-     Was there a clean gap, or did the two groups overlap? -->
+There should be a clear distance gap between relevant campus queries and completely unrelated ones. A target of 4 out of 5 is realistic, leaving room for the possibility that one random question might happen to share semantic overlap with campus terminology.
 
 ---
 
 ## 4. Something about your chunks
 
-<!-- YOU WRITE THIS ONE.
-
-     How would you know if your chunks were the right size? Name something
-     countable or observable.
-
-     Examples of the right shape — don't copy these, they should come from
-     what you actually saw in Milestone 3:
-       - "At least 4 of 5 sampled chunks read as a complete thought, with no
-          sentence cut in half at either end."
-       - "No chunk is shorter than 200 characters, since anything below that
-          in my corpus turned out to be a heading with no content under it." -->
-
-
+At least 4 of 5 sampled chunks are shorter than 400 characters and contain information from only a single document/post.
 
 **Why this target:**
-
-
-
+Because the `campus_life` documents are very short, dense posts (averaging around 317 characters), using larger chunks would merge multiple distinct topics into one chunk, making retrieval noisy and imprecise.
 ---
 
 ## 5. Your choice
 
-<!-- YOU WRITE THIS ONE TOO.
-
-     Pick something you actually care about getting right. It could be about
-     speed, about refusals, about a particular kind of question your corpus
-     handles badly, about source attribution being correct rather than merely
-     present — anything, as long as it names a number or an observable
-     outcome. -->
-
-
+For at least 4 of my 5 test questions, the named source document actually contains the specific facts used in the answer, rather than just being topically related.
 
 **Why this target:**
-
-
-
+Source attribution isn't useful if the model is hallucinating or misattributing facts. Getting 4 out of 5 correct is a realistic target for an LLM that might occasionally synthesize information from its prior knowledge.
 ---
 
 <!-- ─────────────────────────────────────────────────────────────────────────
