@@ -21,11 +21,14 @@
 
 ## What This Does
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
+This is a retrieval system over the `campus_life` corpus: 88 short student
+posts about one university's housing, dining halls, courses, and campus admin.
+It answers specific factual questions a student would actually ask like how much
+laundry costs in a given hall, when a dining hall closes, the weekly workload
+for a course, the printing quota per semester, when you declare a major. For
+each question it finds the most relevant posts, refuses questions the corpus
+doesn't cover instead of guessing, and answers only from the posts it found,
+naming the source file it used.
 
 ## Chunking Strategy
 
@@ -175,9 +178,17 @@ up.
 
      Milestone 5. -->
 
-**1.**
+**1.** I asked the AI to write a paragraph-aware chunking function for `split_documents` that splits strictly on double newlines up to a 400-character ceiling. The AI's initial code worked, but when a long document was split, the second and third chunks completely lost the document's title (which contains the dorm or course name), making those chunks useless for retrieval on their own. I went in and modified the loop myself so that it always grabs `paragraphs[0]` as the title, and then manually prepends that title string to every subsequent split chunk. This ensured every chunk kept its context without relying on overlapping characters.
 
-**2.**
+**2.** When I asked Claude whether `GROUNDING_INSTRUCTION` was strict enough, it
+first ran a test that looked like the model was mixing buildings up — it answered
+"eight washers" for Innisfree, which is Aldridge's number. Before trusting that,
+I had it open the actual source files, and it turned out "eight washers and six
+dryers" is copy-pasted boilerplate in every hall's laundry post, so the answer
+was correct, not drift. I re-tested using laundry *costs* (which really do differ
+per building) and the answers stayed on the right building every time. So I kept
+the instruction unchanged instead of tightening it for a problem that wasn't
+there.
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
