@@ -29,18 +29,26 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 400 characters (a ceiling, not a blind window — I split on
+paragraph boundaries and pack whole paragraphs up to this limit)
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
+**Overlap:** 0 characters
 
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
+I picked those values by reading `campus_life` and running the starter chunker over it:
+- The posts are 88 short reviews (median 305 characters, longest 549).
+- Every post is a title line followed by blank-line-separated paragraphs.
+- Each paragraph holds a distinct fact (the good, the bad, laundry cost, noise).
+- My questions ask for one fact at a time (e.g., a laundry price, a build year).
+- A chunk should hold one fact cleanly, not several diluted together.
 
-     Milestone 3. -->
+**Why 400.** 
+The chunk size of 400 made the most sense in case of campus_life:
+- 76 of the 88 posts are already under 400 characters, so most posts stay whole: one post, one chunk, with the title and the fact together. That was my Milestone 1 finding and I want to keep it. 
+- The 12 posts that go over 400 characters pack 3 to 5 separate facts into one body. If I leave them whole, a question about the laundry price gets a chunk that's mostly about heating and noise. Splitting those on the blank lines gives each fact its own chunk.
+- 400 is also the same limit my criterion 4 checks for, so I set the ceiling to match it rather than pick an unrelated number.
+
+
+<!-- Milestone 3: code lives in chunker.py::split_documents. -->
 
 ## Sample Chunks
 
@@ -53,29 +61,54 @@
 
      Milestone 3. -->
 
-**Chunk 1** — source: `` — produced by: ``
+**Chunk 1** — source: `admin_add_drop_deadline.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
+On the add/drop deadline
+
+You can add a course through the end of the second week. Dropping is a longer window — through the end of week six — but a drop after week two shows as a W on your transcript. Nothing anywhere on the registrar's site says this plainly, and students find out from each other.
 ```
 
-**Chunk 2** — source: `` — produced by: ``
+**Chunk 2** — source: `course_cs_210.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
+CS 210 Data Structures
+
+I'm a junior and I've done this twice now. Format is lecture with weekly labs; slides go up after class, not before. Assessment: two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
+
+Expect 8 to 10 hours a week outside class.
 ```
 
-**Chunk 3** — source: `` — produced by: ``
+**Chunk 3** — source: `course_math_220_workload.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
+Workload for MATH 220 Linear Algebra
+
+People keep asking so: 6 to 8 hours a week, almost all of it on problem sets. That's real time, not optimistic time.
+
+It's front-loaded — the first month is heavier than the rest, partly because you're learning the format.
 ```
 
-**Chunk 4** — source: `` — produced by: ``
+**Chunk 4** — source: `dining_the_ridgeway_cafe_followup.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
+Re: The Ridgeway Café
+
+Adding to what people have said about The Ridgeway Café. The wait figure of 10 to 15 minutes at 12:30 matches what I've seen. If you're trying to eat between classes, go before 11:45 and it's a different building entirely.
+
+Also worth saying: seating is tight; about 40 seats for a building of 900. Nobody tells you this at orientation.
 ```
 
-**Chunk 5** — source: `` — produced by: ``
+**Chunk 5** — source: `housing_morrow_house.txt#0` — produced by: `chunker.py::split_documents`
 
 ```
+Morrow House — what it's actually like
+
+Just finished a year in this building. Built 1954, partially renovated 2008. Rooms are singles and doubles, hall bathrooms.
+
+The good: cheapest housing tier by about $900 a year, and the singles are real singles.
+
+The bad: known damp problem on the ground floor; two rooms were taken offline in 2024.
 ```
 
 ## Sample Answer
